@@ -4,10 +4,9 @@ import { auth } from "./lib/auth";
 import { createSocketServer } from "./lib/socket";
 
 const app = express();
-const port = 8000;
+const port = 3000;
 
-app.all("/api/auth/*", toNodeHandler(auth));
-
+app.all('/api/auth/{*any}', toNodeHandler(auth));
 // Mount body-parsing middleware after the Better Auth handler.
 app.use(express.json());
 
