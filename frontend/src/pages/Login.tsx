@@ -1,9 +1,11 @@
-import { authClient } from './lib/auth-client'
-import './App.css'
+import { authClient } from '../lib/auth-client'
 
-function App() {
+function Login() {
   const signInWithGoogle = async () => {
-    await authClient.signIn.social({ provider: "google" })
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "http://localhost:5173/"
+    })
   }
 
   return (
@@ -20,4 +22,4 @@ function App() {
   )
 }
 
-export default App
+export default Login
