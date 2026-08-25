@@ -5,6 +5,7 @@ import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
 import { createSocketServer } from "./lib/socket";
 import { logger } from "./lib/logger";
+import friendsRouter from "./routes/friends";
 
 const app = express();
 const port = 3000;
@@ -18,6 +19,8 @@ app.use(cors({
 
 app.all('/api/auth/{*any}', toNodeHandler(auth));
 app.use(express.json());
+
+app.use('/api/friends', friendsRouter);
 
 const { httpServer } = createSocketServer(app);
 

@@ -12,6 +12,13 @@ datasource db {
   provider = "postgresql"
 }
 
+enum FriendRequestStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  BLOCKED
+}
+
 model User {
   id            String    @id
   name          String
@@ -22,6 +29,10 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  sentFriendRequests     FriendRequest[] @relation("SentFriendRequests")
+  receivedFriendRequests FriendRequest[] @relation("ReceivedFriendRequests")
+  friendships            Friendship[]    @relation("Friendships")
+  friendOf               Friendship[]    @relation("FriendOf")
 
   @@unique([email])
   @@map("user")
@@ -75,4 +86,33 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model FriendRequest {
+  id        String   @id @default(cuid())
+  status    FriendRequestStatus @default(PENDING)
+  senderId  String
+  sender    User     @relation("SentFriendRequests", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId String
+  receiver  User     @relation("ReceivedFriendRequests", fields: [receiverId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([senderId, receiverId])
+  @@index([receiverId, status])
+  @@index([senderId, status])
+  @@map("friend_request")
+}
+
+model Friendship {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation("Friendships", fields: [userId], references: [id], onDelete: Cascade)
+  friendId  String
+  friend    User     @relation("FriendOf", fields: [friendId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, friendId])
+  @@index([userId])
+  @@map("friendship")
 }

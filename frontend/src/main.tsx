@@ -1,15 +1,26 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Provider } from 'react-redux'
 import './index.css'
 import Login from './pages/Login'
 import Home from './pages/Home'
+import Friends from './pages/Friends'
 import { authClient } from './lib/auth-client'
+import { store } from './store'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { data: session } = authClient.useSession()
+  const { data: session, isPending } = authClient.useSession()
 
-  if (session === null || session === undefined) {
+  if (isPending) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg text-gray-500">Loading...</div>
+      </div>
+    )
+  }
+
+  if (!session) {
     return <Navigate to="/login" replace />
   }
 
@@ -29,6 +40,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/friends"
+          element={
+            <ProtectedRoute>
+              <Friends />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
@@ -37,6 +56,8 @@ function App() {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </StrictMode>,
 )

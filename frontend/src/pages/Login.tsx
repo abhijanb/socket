@@ -9,12 +9,12 @@ function Login() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', gap: '1rem' }}>
-      <h1>Messenger</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+      <h1 className="text-3xl font-bold">Messenger</h1>
       <button
         type="button"
         onClick={signInWithGoogle}
-        style={{ padding: '0.75rem 1.5rem', backgroundColor: '#4285f4', color: 'white', border: 'none', borderRadius: '4px', fontSize: '1rem', cursor: 'pointer' }}
+        className="px-6 py-3 bg-blue-500 text-white rounded-lg text-base hover:bg-blue-600 transition-colors cursor-pointer"
       >
         Sign in with Google
       </button>
